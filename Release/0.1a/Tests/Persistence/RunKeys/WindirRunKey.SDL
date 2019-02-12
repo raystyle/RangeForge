@@ -1,0 +1,38 @@
+
+# pack a decoy with suspicious strings
+# ------------------------------------
+EXE 
+	STRINGS SELECT(10)           # will select 10 strings from the list (seed controlled)
+	"windefender.exe"
+	" terminate " 
+	" forcing " 
+	" Executing " 
+	" failed " 
+	" success " 
+	" Exception " 
+	" at " 
+	" Imagebase " 
+	" pid " 
+	" to " 
+	"InternetOpen " 
+	"InternetConnect " 
+	"HttpOpenRequest " 
+	"HttpSendRequest " 
+	"HttpQueryInfo " 
+	" new " 
+	" logging " 
+	" on " 
+	" off " 
+	" delete " 
+	" file " 
+	" Download & Execute "
+	ENDSTRINGS
+
+	HOLDOPEN		# hold the process open
+
+ENDEXE
+
+DROP -WINDIR		# drop the decoy to the windows directory (!)
+LAUNCH				# run the decoy binary for good measure
+USERWAIT			# wait for the user
+CLEANUP				# kill child process and cleanup all artifacts

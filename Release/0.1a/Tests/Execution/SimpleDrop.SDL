@@ -1,0 +1,25 @@
+
+# pack a decoy with suspicious strings
+# ------------------------------------
+EXE 
+	STRINGS 
+	" open " 
+	" download " 
+	" screenshot " 
+	" melt " 
+	" copyfile " 
+	" upload " 
+	" delete " 
+	" keylogger " 
+	" record " 
+	" changedns " 
+	" install " 
+	" uninstall " 
+	" stealth " 
+	" backdoor " 
+	" rootkit " 
+	ENDSTRINGS
+ENDEXE
+DROP
+LAUNCH
+USERWAIT			# wait for the user
