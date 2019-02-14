@@ -1,0 +1,28 @@
+EXE
+	STRINGS
+		"cmd /c del C:\MALWARE_01~1.EXE > nul "
+		" AddressFamily "
+		" cmd.exe "
+		" Com+Enabled "
+		" command "
+		" ComputerName "
+		" COMSPEC "
+		" CreatePipe "
+		" CreateProcessA "
+		" DelegateExecute "
+		" Description "
+		" DisableLocalOverride "
+		" DisconnectNamedPipe "
+		" GetComputerNameA "
+		" GetCurrentProcess "
+		" GetCurrentThread "
+		" GetEnvironmentVariableA "
+		" GetModuleFileNameA "
+		" GetModuleHandleA "
+		" GetShortPathNameA "
+		" GetStartupInfoA "
+	ENDSTRINGS
+ENDEXE
+DROP --path "%Appdata%"
+RUNKEY
+USERWAIT

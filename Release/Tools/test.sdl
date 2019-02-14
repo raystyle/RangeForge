@@ -1,0 +1,6 @@
+STRINGS
+	"Hello World"
+	"sekurlsa"
+ENDSTRINGS
+
+MESSAGEBOX "Click OK to Exit"

@@ -10,6 +10,7 @@
 #include <Windows.h>
 #include <stdio.h>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -31,6 +32,8 @@ using namespace std;
 
 #define LIB_PATH(lib) "..\\Output\\Lib\\" PLATFORM_STRING "\\" CONFIG_STRING "\\" lib
 
+std::vector<BYTE> AssembleHeaderArray(CHAR ** theResourcePointer, INT * theResourceSizes, INT Element);
+
 // drop
 BOOL ToolDropFileEmpty(WCHAR *theFilePath);
 BOOL ToolDropFileClone(WCHAR *theFilePath);
@@ -38,7 +41,7 @@ BOOL ToolDropFileFromResource(WCHAR *theFilePath, LPCWSTR theResourceID);
 BOOL ToolCleanFile(WCHAR *theFilePath);
 //BOOL ToolDropFileFromHeader(WCHAR *theFilePath, BYTE *theResourcePointer, SIZE_T ResourceSize);
 BOOL ToolDropFileFromHeader(WCHAR *theFilePath, CHAR ** theResourcePointer, INT * theResourceSizes, INT Elements);
-BYTE* OpenAndLockResource(LPCWSTR theResourceID, DWORD* size_out);
+std::vector<BYTE> OpenAndLockResource(LPCWSTR theResourceID);
 
 // Registry persistence
 BOOL ToolRegReadOriginalStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring &orig_string);
@@ -46,6 +49,8 @@ BOOL ToolRegAppendStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename,
 BOOL ToolRegRestoreOriginalStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring orig_string);
 BOOL ToolRegAddStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring new_value);
 BOOL ToolRegDeleteValue(HKEY hKeyRoot, wstring keyname, wstring valuename);
+BOOL PersistRunKey(std::wstring value_name, std::wstring target_file_path, bool run_once, bool user_hive, bool use_wow64);
+BOOL DeleteRunKeyPersistence(std::wstring value_name, bool run_once, bool user_hive, bool wow64);
 
 // process
 BOOL ToolLaunchProcess(WCHAR *theProcessPath);
@@ -55,7 +60,7 @@ BOOL ToolLaunchCommandShell(WCHAR *szCommandLine);
 
 // inject
 BOOL InjectDll(std::wstring inject_source, std::wstring target_process, std::wstring injection_method);
-BOOL InjectDll(BYTE* dll_data, size_t dll_size, std::wstring target_process, std::wstring injection_method);
+BOOL InjectDll(std::vector<BYTE> data, std::wstring target_process, std::wstring injection_method);
 
 BOOL ToolFunctionOne(CHAR *theArg);
 BOOL ToolFunctionTwo(CHAR *theArg);
