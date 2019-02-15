@@ -95,3 +95,8 @@ BOOL ToolAddRunKey(wstring theName, wstring theFilePath);
 BOOL ToolDeleteRunKey(wstring theName);
 BOOL ToolAddRunOnceKey(wstring theName, wstring theFilePath);
 BOOL ToolDeleteRunOnceKey(wstring theName);
+
+// Synchronization
+DWORD WaitGlobalEventAndTerminate(std::wstring event_name);
+bool SignalGlobalEvent(std::wstring event_name);
+bool WaitGlobalEvent(std::wstring event_name);

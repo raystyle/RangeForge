@@ -1,0 +1,8 @@
+EXE
+	DLL
+		MESSAGEBOX "Hello From Injected Dll"
+	ENDDLL
+	INJECT
+ENDEXE
+DROP
+RUNKEY --runonce

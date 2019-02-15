@@ -1,0 +1,6 @@
+DLL
+	MESSAGEBOX "Hello from injected notepad dll!"
+ENDDLL
+LAUNCH cmd "notepad.exe"
+INJECT "notepad.exe"
+MESSAGEBOX "Click Ok to exit"

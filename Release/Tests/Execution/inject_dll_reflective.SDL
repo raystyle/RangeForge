@@ -1,0 +1,6 @@
+DLL
+	MESSAGEBOX "Hello! I am loaded in memory without a file!"
+ENDDLL
+DROP
+INJECT --reflective
+MESSAGEBOX "Click Ok to exit"
