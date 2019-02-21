@@ -1,0 +1,5 @@
+
+LAUNCH	"%WINDIR%\System32\notepad.exe"
+USERWAIT	
+
+

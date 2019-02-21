@@ -1,0 +1,13 @@
+
+EXE 
+	STRINGS 
+	" download " 
+	" screenshot " 
+	" melt " 
+	" backdoor " 
+	" rootkit " 
+	ENDSTRINGS
+ENDEXE
+DROP				# drop embedded EXE
+LAUNCH				# launch embedded EXE
+USERWAIT			# wait for the user

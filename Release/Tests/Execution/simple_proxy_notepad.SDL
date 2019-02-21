@@ -1,0 +1,5 @@
+
+LAUNCH wmic "%WINDIR%\System32\notepad.exe"
+USERWAIT	
+
+

@@ -1,0 +1,14 @@
+# APT29 style Run key persistence aka CozyCar | CozyDuke
+# ref: https://attack.mitre.org/software/S0046/
+EXE
+	# please note the embedded EXE is just a blank exe, the persistence method is the TTP
+	STRINGS
+		"hello decoy"
+	ENDSTRINGS
+	HOLDOPEN
+ENDEXE
+DROP
+REGKEY "Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run"
+LAUNCH
+USERWAIT
+
