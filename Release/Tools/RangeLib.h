@@ -12,11 +12,11 @@
 #include <string>
 #include <vector>
 
-using namespace std;
+using namespace std;  // TODO remove this and fix all the references to std
 
 #pragma comment (lib, "User32.lib")
 
-#define RANGELIB_VERSION L"0.1a"
+#define RANGELIB_VERSION L"1.2"
 
 #ifndef _WIN64
 #define PLATFORM_STRING "Win32"
@@ -30,9 +30,12 @@ using namespace std;
 #define CONFIG_STRING "Release"
 #endif
 
+// TODO fix this to work on all project files
 #define LIB_PATH(lib) "..\\Output\\Lib\\" PLATFORM_STRING "\\" CONFIG_STRING "\\" lib
 
+//utilities
 std::vector<BYTE> AssembleHeaderArray(CHAR ** theResourcePointer, INT * theResourceSizes, INT Element);
+std::wstring expand_env(std::wstring str);
 
 // drop
 BOOL ToolDropFileEmpty(WCHAR *theFilePath);
@@ -43,20 +46,42 @@ BOOL ToolCleanFile(WCHAR *theFilePath);
 BOOL ToolDropFileFromHeader(WCHAR *theFilePath, CHAR ** theResourcePointer, INT * theResourceSizes, INT Elements);
 std::vector<BYTE> OpenAndLockResource(LPCWSTR theResourceID);
 
+typedef enum _RESTOREFLAG
+{
+	RESTORE_NONE,		// don't restore, just leave the value
+	RESTORE_DELETE,		// delete the item entirely
+	RESTORE_ORIGINAL	// put back the original value
+} RESTOREFLAG;
+
 // Registry persistence
-BOOL ToolRegReadOriginalStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring &orig_string);
+typedef struct _REGSAVESTATE
+{
+	HKEY hive;
+	std::wstring original_keypath;
+	std::wstring original_name;
+	std::wstring original_stringvalue;
+
+	RESTOREFLAG restore_keypath = RESTOREFLAG::RESTORE_NONE;
+	RESTOREFLAG restore_namevalue = RESTOREFLAG::RESTORE_NONE;
+	
+} REGSAVESTATE, *PREGSAVESTATE;
+
+BOOL ToolRegSaveState(HKEY hKeyRoot, wstring keypath, wstring valuename, PREGSAVESTATE save_state);
+BOOL ToolRegRestoreState(PREGSAVESTATE save_state);
+
 BOOL ToolRegAppendStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring file_path);
-BOOL ToolRegRestoreOriginalStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring orig_string);
-BOOL ToolRegAddStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring new_value);
+BOOL ToolRegAddStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring new_value, bool ensureCreated = false);
 BOOL ToolRegDeleteValue(HKEY hKeyRoot, wstring keyname, wstring valuename);
+
+// TODO refactor
 BOOL PersistRunKey(std::wstring value_name, std::wstring target_file_path, bool run_once, bool user_hive, bool use_wow64);
 BOOL DeleteRunKeyPersistence(std::wstring value_name, bool run_once, bool user_hive, bool wow64);
 
 // process
-BOOL ToolLaunchProcess(WCHAR *theProcessPath);
+BOOL ToolLaunchProcess(WCHAR* theProcessPath);
 
 // cmd shell
-BOOL ToolLaunchCommandShell(WCHAR *szCommandLine);
+BOOL ToolLaunchCommandShell(WCHAR* szCommandLine);
 
 // inject
 BOOL InjectDll(std::wstring inject_source, std::wstring target_process, std::wstring injection_method);
@@ -86,9 +111,9 @@ BOOL ToolCreateTask(WCHAR *theTaskName, WCHAR *theFilePath);
 BOOL ToolDeleteTask(WCHAR *theTaskName, WCHAR *theFilePath);
 
 // AppInit DLL
-BOOL ToolReadOriginalAppInitDLL(wstring &orig_value);
+//BOOL ToolReadOriginalAppInitDLL(wstring &orig_value);
 BOOL ToolAddAppInitDLL(wstring theFilePath);
-BOOL ToolRestoreAppInitDLL(wstring orig_value);
+//BOOL ToolRestoreAppInitDLL(wstring orig_value);
 
 // Run Key
 BOOL ToolAddRunKey(wstring theName, wstring theFilePath);
