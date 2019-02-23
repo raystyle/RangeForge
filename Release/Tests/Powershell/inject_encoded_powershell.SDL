@@ -1,0 +1,13 @@
+DLL
+	STRINGS
+		"powershell.exe -EncodedCommand VwByAGkAdABlAC0ASABvAHMAdAAgACcASABlAGwAbABvACAAVwBvAHIAbABkACcA"
+	ENDSTRINGS
+	MESSAGEBOX "press to continue"
+	CMD
+	HOLDOPEN
+ENDDLL
+DROP
+LAUNCH cmd "notepad.exe"
+INJECT "notepad.exe" --reflective
+USERWAIT
+
