@@ -1,7 +1,11 @@
 # RangeForge
 Hardening Your Security
 
-Please see our project website at www.rangeforge.com
+Please see our project website at [RangeForge.com](https://www.rangeforge.com/).
+
+## Version 1.23
+- added REGKEY command to persist at arbitrary location
+- minor bugfixes
 
 ## Version 1.22
 - demo of encoded powershell inside of reflective injected DLL
