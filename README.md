@@ -2,7 +2,7 @@
 
 Current version is 1.23
 
-Download archive [RangeForge_v1.23.zip](https://github.com/hoglund666/RangeForge/tree/master/Archive/RangeForge_v1.23.zip).
+Download archive [RangeForge_v1.23.zip](https://github.com/hoglund666/RangeForge/raw/master/Archive/RangeForge_v1.23.zip).
 
 Stay updated on the Range Forge project at [RangeForge.com](https://www.rangeforge.com/).
 
