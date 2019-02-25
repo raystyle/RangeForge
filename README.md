@@ -1,48 +1,5 @@
-# RangeForge
-Hardening Your Security
+# Range Forge
 
-Please see our project website at www.rangeforge.com
+Stay updated on the Range Forge project at [RangeForge.com](https://www.rangeforge.com/).
 
-## Version 1.22
-- demo of encoded powershell inside of reflective injected DLL
-- fixed compiler warnings due to conflicting debug flags
-
-## Version 1.21
-- demo of encoded powershell script
-- demo of account enumeration
-- demo of adding local admin account
-
-## Version 1.2
-- added REGKEY command for arbitrary key creation
-- added cleanup to kill launched processes
-- added feature to CMD to use last STRINGS as batch file
-
-## Version 1.1
-- added seed to variable and filename generation
-- added CMD to run arbitrary command line
-- added LAUNCH feature to use proxy through secondary command-line exe
-
-## Version 1.0
-- got wait command working with command-line
-- save and cleanup added
-- RUNKEY persistence
-
-## Version 0.4
-- INJECT command
-- added classic and reflective DLL injection
-
-## Version 0.3
-- embedding STRINGS
-- embedding DLL's now possible
-- added resource packing for DROP and embedded EXE/DLL
-- LAUNCH command
-
-## Version 0.2
-- significant work on recursive decent parser
-- proper order of operations
-
-## Version 0.1
-- added basic PRINT command
-- comments working
-- hello world launch of compiler/linker
-
+Range Forge is a testing tool framework for breach and attack simulation. Range Forge, as the name implies, is like a workshop where tests are created.  It can be used in a cyber range or deployed in a production environment. Attack patterns are inspired from the MITRE ATT&CK repository and other well socialized and industry accepted sources.  It is a free tool for the community and vendor agnostic. 	

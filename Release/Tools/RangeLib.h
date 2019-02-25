@@ -81,6 +81,9 @@ BOOL DeleteRunKeyPersistence(std::wstring value_name, bool run_once, bool user_h
 // process
 BOOL ToolLaunchProcess(WCHAR* theProcessPath);
 
+// debugging
+BOOL ToolOpenProcess(std::wstring target_process);
+
 // cmd shell
 BOOL ToolLaunchCommandShell(WCHAR* szCommandLine);
 
@@ -88,6 +91,7 @@ BOOL ToolLaunchCommandShell(WCHAR* szCommandLine);
 BOOL InjectDll(std::wstring inject_source, std::wstring target_process, std::wstring injection_method);
 BOOL InjectDll(std::vector<BYTE> data, std::wstring target_process, std::wstring injection_method);
 
+// unit testing
 BOOL ToolFunctionOne(CHAR *theArg);
 BOOL ToolFunctionTwo(CHAR *theArg);
 BOOL ToolFunctionThree(CHAR *theArg);
