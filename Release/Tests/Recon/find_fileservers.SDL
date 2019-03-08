@@ -1,0 +1,6 @@
+STRINGS
+	"net group 'Domain Computers' /domain | findstr 'FILE'"
+ENDSTRINGS
+CMD 
+USERWAIT
+

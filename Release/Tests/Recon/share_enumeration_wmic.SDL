@@ -1,0 +1,6 @@
+STRINGS
+	"wmic share get /format:list"
+ENDSTRINGS
+CMD 
+USERWAIT
+

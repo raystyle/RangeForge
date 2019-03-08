@@ -55,6 +55,7 @@ typedef enum _RESTOREFLAG
 } RESTOREFLAG;
 
 // Registry persistence
+// TODO refactor so we don't need to expose external structure.. make internal 'automagic' version
 typedef struct _REGSAVESTATE
 {
 	HKEY hive;
@@ -74,15 +75,41 @@ BOOL ToolRegAppendStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename,
 BOOL ToolRegAddStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring new_value, bool ensureCreated = false);
 BOOL ToolRegDeleteValue(HKEY hKeyRoot, wstring keyname, wstring valuename);
 
-// TODO refactor
+// TODO deconflict refactor
 BOOL PersistRunKey(std::wstring value_name, std::wstring target_file_path, bool run_once, bool user_hive, bool use_wow64);
 BOOL DeleteRunKeyPersistence(std::wstring value_name, bool run_once, bool user_hive, bool wow64);
+
+// TODO deconflict Run Key
+BOOL ToolAddRunKey(wstring theName, wstring theFilePath);
+BOOL ToolDeleteRunKey(wstring theName);
+BOOL ToolAddRunOnceKey(wstring theName, wstring theFilePath);
+BOOL ToolDeleteRunOnceKey(wstring theName);
+
+// TODO deconflict runkey function
+BOOL PersistRunKey(std::wstring value_name, std::wstring target_file_path, bool run_once, bool user_hive, bool use_wow64);
+//BOOL PersistService(std::wstring svc_name, std::wstring display_name, std::wstring target_file_path, std::wstring user_name, std::wstring password);
+//BOOL PersistSvcHost(std::wstring svc_name, std::wstring group_name, std::wstring target_dll_path);
+//BOOL PersistAppInitDll(std::wstring target_dll_path);
+
+// Services
+BOOL ToolCreatePersistentService(WCHAR *theBinaryPath, WCHAR *theServiceName, WCHAR *theServiceDisplayName);
+BOOL ToolDeletePersistentService(WCHAR *theServiceName);
+BOOL ToolHijackService(HKEY hRootKey, WCHAR *theServiceName, WCHAR *theHijackBinaryPath);
+BOOL ToolSaveServiceImagePath(wstring servicename, PREGSAVESTATE save_state);
 
 // process
 BOOL ToolLaunchProcess(WCHAR* theProcessPath);
 
 // debugging
+BOOL ToolDebugProcess(std::wstring target_process);
 BOOL ToolOpenProcess(std::wstring target_process);
+BOOL ToolEnumProcii();
+BOOL ToolAdjustTokenPrivilege(std::wstring privilege_name);
+BOOL ToolDetachDebugger();
+
+// keylogger
+BOOL ToolSetKeylogger();
+BOOL ToolRemoveKeylogger();
 
 // cmd shell
 BOOL ToolLaunchCommandShell(WCHAR* szCommandLine);
@@ -97,36 +124,27 @@ BOOL ToolFunctionTwo(CHAR *theArg);
 BOOL ToolFunctionThree(CHAR *theArg);
 BOOL ToolFunctionFour(CHAR *theArg);
 
-//persistance
-BOOL PersistRunKey(std::wstring value_name, std::wstring target_file_path, bool run_once, bool user_hive, bool use_wow64);
-BOOL PersistService(std::wstring svc_name, std::wstring display_name, std::wstring target_file_path, std::wstring user_name, std::wstring password);
-BOOL PersistSvcHost(std::wstring svc_name, std::wstring group_name, std::wstring target_dll_path);
-BOOL PersistAppInitDll(std::wstring target_dll_path);
-
 // User Messages
 BOOL ShowMessageBoxOk(std::wstring message, std::wstring caption);
 BOOL ShowMessageBoxYesNo(std::wstring message, std::wstring caption);
 
-// Services
-BOOL ToolCreatePersistentService(WCHAR *theBinaryPath, WCHAR *theServiceName, WCHAR *theServiceDisplayName);
-BOOL ToolDeletePersistentService(WCHAR *theServiceName);
+
 
 // Tasks
 BOOL ToolCreateTask(WCHAR *theTaskName, WCHAR *theFilePath);
-BOOL ToolDeleteTask(WCHAR *theTaskName, WCHAR *theFilePath);
+BOOL ToolDeleteTask(WCHAR *theTaskName);
 
 // AppInit DLL
 //BOOL ToolReadOriginalAppInitDLL(wstring &orig_value);
 BOOL ToolAddAppInitDLL(wstring theFilePath);
 //BOOL ToolRestoreAppInitDLL(wstring orig_value);
 
-// Run Key
-BOOL ToolAddRunKey(wstring theName, wstring theFilePath);
-BOOL ToolDeleteRunKey(wstring theName);
-BOOL ToolAddRunOnceKey(wstring theName, wstring theFilePath);
-BOOL ToolDeleteRunOnceKey(wstring theName);
+
 
 // Synchronization
 DWORD WaitGlobalEventAndTerminate(std::wstring event_name);
 bool SignalGlobalEvent(std::wstring event_name);
 bool WaitGlobalEvent(std::wstring event_name);
+
+BOOL ToolSetVerbose(int level);
+

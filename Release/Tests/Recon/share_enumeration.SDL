@@ -1,0 +1,7 @@
+STRINGS
+	"net share"
+	"net view"
+ENDSTRINGS
+CMD 
+USERWAIT
+

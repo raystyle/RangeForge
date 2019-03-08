@@ -1,0 +1,15 @@
+EXE
+	STRINGS
+		"cmd /c del C:\MALWARE_01~1.EXE > nul "
+		" AddressFamily "
+		" cmd.exe "
+		" Com+Enabled "
+		" command "
+		" GetModuleHandleA "
+		" GetShortPathNameA "
+		" GetStartupInfoA "
+	ENDSTRINGS
+ENDEXE
+DROP
+SERVICE hijack "Fax"		# hijack the Fax service
+USERWAIT

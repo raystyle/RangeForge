@@ -3,6 +3,10 @@ Hardening Your Security
 
 Please see our project website at [RangeForge.com](https://www.rangeforge.com/).
 
+## Version 1.24
+- added service and task persistence
+- added service hijacking
+
 ## Version 1.23
 - added REGKEY command to persist at arbitrary location
 - minor bugfixes

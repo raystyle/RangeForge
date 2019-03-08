@@ -30,6 +30,17 @@ Flags are passed to a command using the dashdash --flag.  These modify the behav
 RUNKEY --noclean  # --noclean disables registry key cleanup after test
 ```
 
+The following flags can be applied universally to most commands:
+
+noclean 
+This will disable artifact cleanup for that specific command.  It can also be passed to an entire exe or dll build block.
+
+```batch
+EXE
+	PRINT "hello world"
+ENDEXE --noclean
+```
+
 ### PRINT
 
 PRINT simply outputs the string to stdout.  Keep in mind that of you use PRINT from an dropped EXE or an injected DLL, the output may be in another process space.
@@ -270,5 +281,27 @@ DROP
 REGKEY "Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run"  # APT29 / CozyCar style persistence
 ```
 
+### SERVICE
+
+Persist through a service.  A service can be created or hijacked.  Used stand-alone, the service will use an auto-generated name and the most recent qualifying binary in the SDL history.
+
+#### SERVICE "name"
+
+Specify the name of the service.  The most recently dropped executable in the SDL history will be used.
+
+#### SERVICE "name" "path"
+
+Specify the name of the service and the path to the binary on disk.
+
+#### SERVICE hijack "name"
+
+Hijack an existing service, specified by "name".  This must be an existing service that uses a stand-alone exe (Type 0x16 or Win32OwnProcess).
+
+#### SERVICE hijack <preset name>
+
+Hijack a service by a preset name.  Supported services are:
+
+- alg
+- alerter
 
 

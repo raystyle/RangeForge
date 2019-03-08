@@ -1,0 +1,7 @@
+STRINGS
+	"whoami"
+	"gpresult /R"
+ENDSTRINGS
+CMD 
+USERWAIT
+
