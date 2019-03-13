@@ -1,6 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Archive",
+    "\\Release",
+    "\\Release\\Tests",
+    "\\Release\\Tests\\Accounts"
   ],
   "PreviewInSolutionExplorer": false
 }

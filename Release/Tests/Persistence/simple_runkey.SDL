@@ -8,5 +8,5 @@ STRINGS
 	" GetShortPathNameA "
 	" GetStartupInfoA "
 ENDSTRINGS
-RUNKEY
+REGKEY run
 USERWAIT

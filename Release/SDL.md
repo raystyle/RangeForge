@@ -1,18 +1,104 @@
 # Scenario Definition Language
 
-Scenario Definition Language (SDL) is the driving force behind the forge.  An easy to understand, almost batch-file-like language that can be used by anyone with command-line experience.  No programming skills are required.  Yet, a user of SDL can easily create a wide variety of attack behavior, malware decoys, droppers within droppers, memory injection, persistence, fileless attacks, and living off the land behaviors.
+Scenario Definition Language (SDL) is the driving force behind the Range Forge.  An easy to understand, almost batch-file-like language that can be used by anyone with command-line experience.  No programming skills are required.  Yet, a user of SDL can easily create a wide variety of attack behavior, malware decoys, droppers within droppers, memory injection, persistence, file-less attacks, and living off the land behaviors.
+
+## Table of Contents
+
+[TOC]
+
+## Basic SDL
 
 SDL Files contain one or more SDL commands.  Command are typically one line and follow this format:
+
 ```batch
 COMMAND <modifier> <argument(s)> --flag <value>
 ```
-A simple example that launched notepad and wait for user input:
+Here is a simple SDL example that launches notepad and then waits for user input:
 ```batch
 LAUNCH "c:\windows\notepad.exe"
 USERWAIT
 ```
 
-## Commands
+The beauty of SDL is the simplicity.  Most commands have built-in behavior and don't require arguments.  In many cases a command will try to figure out what you mean to do.  
+
+```
+EXE
+	PRINT "Hello World"
+ENDEXE
+DROP
+LAUNCH
+```
+
+The above SDL creates an executable that prints "Hello World" to the screen.  The DROP and LAUNCH commands are simple and will figure out what to do based on their position in the SDL file.   This example will drop the EXE to disk and launch it. 
+
+***How does it work?*** Most commands can take action on the output of a preceding command.  In our example, the DROP command will look backwards in the file for the first thing that can be written to disk as a file (aka *dropped*).  In this case, the immediately preceding executable (defined by the ```EXE/ENDEXE``` block) qualifies as an object that can be written to disk.  The file will be written as a standard PE executable that can be executed. 
+
+In similar fashion, the LAUNCH command also looks through the command history to find something to launch.  In this case, the immediately preceding DROP will have dropped a PE executable to disk.  The LAUNCH command will then launch that file.
+
+***What will it do?*** If you want to figure out what actions an SDL will take (without actually executing a test) you can perform an **audit**.  Using the ```RangeForge.exe``` utility, simply pass the ```--audit``` flag and the tool will list out the sequence of behavior to expect from the SDL.
+
+For example, for the following SDL file:
+
+```
+EXE
+	STRINGS
+		"cmd /c del C:\MALWARE_01~1.EXE > nul "
+		" AddressFamily "
+		" cmd.exe "
+		" Com+Enabled "
+		" command "
+		" ComputerName "
+		" COMSPEC "
+		" CreatePipe "
+		" CreateProcessA "
+		" DelegateExecute "
+		" Description "
+		" DisableLocalOverride "
+		" DisconnectNamedPipe "
+		" GetComputerNameA "
+		" GetCurrentProcess "
+		" GetCurrentThread "
+		" GetEnvironmentVariableA "
+		" GetModuleFileNameA "
+		" GetModuleHandleA "
+		" GetShortPathNameA "
+		" GetStartupInfoA "
+	ENDSTRINGS
+ENDEXE
+DROP --path "%Appdata%"
+REGKEY run
+USERWAIT
+```
+
+Here is the ```RangeForge.exe --audit``` output:
+
+```
+c:\Temp\Tools>rangeforge appdata_runkey.SDL --audit
+#  Range Forge
+#  -------------------------------------------
+#  Version: 1.27
+#  Authors: Hoglund,Butterworth 2018, 2019
+#  -------------------------------------------
+# Audit mode only. Logging to stdout. No compilation.
+@ audit: Logging to stdout. No compilation.
+# Starting Range Forge...
+@ audit: START scenario CRT931d0a51
+@ audit: EMBEDDING child scenario CRTa4c3fa63
+@ audit: Dropping embedded scenario CRTa4c3fa63 as ("%Appdata%\\CRT56a922be.exe")...
+@ audit: Running write regkey here with key path ("Software\\Microsoft\\Windows\\CurrentVersion\\Run") and key name ("key_CRT441c8d50") and value ("%Appdata%\\CRT56a922be.exe")
+@ audit: Waiting for user to press ENTER key here...
+@ audit: END scenario CRT931d0a51
+# Done creating SDL scenario...
+# Range Forge completed successfully.
+
+c:\Temp\Tools>
+```
+
+The **audit** feature is a key part of the Range Forge architecture.  It helps illustrate behavior and log static observables and IOC's associated with a test scenario.  Also, auditing illustrates that Range Forge calculates all pseudo-random values before compilation time.  This is an important feature that allows Range Forge to clean downstream artifacts after a test is complete.  And, when using **seeded polymorphism**, it allows you to see that Range Forge generated tests can be reproduced in a QA lab or across multiple teams.
+
+For more information on how to use the ```RangeForge.exe``` command line, see [Cmdline.md]()
+
+# SDL Commands
 
 ### Comments
 
@@ -22,24 +108,66 @@ Comments are prefixed with a hash sign #
 # this is a comment
 ```
 
+Comments need to be one to a line.  Also, they can appear at the end of a line after a legitimate command...
+
+```
+PRINT "Hello"  # putting a comment here is OK
+```
+
+Comments are a useful way to keep track of your tests.
+
 ### Flags
 
-Flags are passed to a command using the dashdash --flag.  These modify the behavior of the command.  Flags can optionally take an argument.
+Flags are passed to a command using the dashdash ```--flag```.  These modify the behavior of the command.  Flags can optionally take an argument.
 
 ```batch
-RUNKEY --noclean  # --noclean disables registry key cleanup after test
+REGKEY --noclean  # --noclean disables registry key cleanup after test
 ```
 
 The following flags can be applied universally to most commands:
 
-noclean 
-This will disable artifact cleanup for that specific command.  It can also be passed to an entire exe or dll build block.
+#### --noclean
+
+This will disable artifact cleanup for that specific command.  By default, Range Forge generated tests will clean up after themselves.  But, in some cases, you may want the test artifacts to be left behind.
+
+```
+DLL
+	STRING "Hello BHO"
+ENDDLL   
+DROP --noclean  # leave the DLL
+REGKEY bho --noclean   # leave the bho registry keys
+```
+
+In the above example, a browser helper object will be registered and left behind after the test has exited.  Alternatively, you can force the entire test to skip cleanup by passing ```---noclean``` to ```RangeForge.exe```...
+
+```
+c:\Temp\Tools>rangeforge appdata_runkey.SDL --noclean
+# noclean enabled.  Test artifacts will be left behind after test.
+# Starting Range Forge...
+...
+```
+
+In the above example, the test won't perform any cleanup.  This is the easiest way to disable cleanup for a given test.  
+
+**Please be aware that disabling cleanup will mean test artifacts are left behind after the test executable has completed.  This MAY NOT be what you want.  For example, if you have hijacked a service with a test binary and you don't clean up, that hijacked service will remain.  At that point the only way to remove it may be manually or by restoring a VM snapshot.**
+
+If you only want to disable cleanup behavior within a given executable or DLL you can pass the ```--noclean``` flag to the ```EXE/ENDEXE``` or ```DLL/ENDDLL``` build block...
 
 ```batch
 EXE
-	PRINT "hello world"
+	STRINGS
+		"This is my text file"
+	ENDSTRINGS
+	DROP
 ENDEXE --noclean
+DROP
+LAUNCH
+USERWAIT
 ```
+
+In the example an executable is dropped and launched.  All of the behavior within the exe has ```--noclean``` applied to it.  That exe then drops a text file to disk.  When the test is complete the exe will be deleted but the dropped text file will remain.
+
+**Some flags are specific to commands and are documented below.**
 
 ### PRINT
 
@@ -48,6 +176,8 @@ PRINT simply outputs the string to stdout.  Keep in mind that of you use PRINT f
 ```batch
 PRINT "this is a string"
 ```
+
+When printing from an injected DLL, often times you won't be able to see the output.  The reason is the PRINT command is sending data to the standard output file handle ```stdout``` that is present in nearly all processes.  But, processes that don't have command windows (i.e., running from ```cmd.exe```) won't display the ```stdout``` data anywhere.
 
 ### MESSAGEBOX
 
@@ -58,6 +188,8 @@ PRINT "this is line one"
 MESSAGEBOX "this is a message box"
 PRINT "this line prints after the message box is dismissed"
 ```
+
+The MESSAGEBOX is a good alternative to PRINT when dealing with programs that have graphical user interfaces (GUI's).  But, unlike PRINT, remember that MESSAGEBOX will pause execution at that line in the SDL.  And, until the user responds to the MESSAGEBOX, the execution will not continue past that point.  This is actually a good feature when you want the test to wait until you have taken some action (like launching an external program or measurement tool).
 
 ### EXE / ENDEXE
 
@@ -197,6 +329,149 @@ CMD
 USERWAIT
 ```
 
+### USER
+
+The USER command allows you to add and query user accounts.  It also allows you to specify different ways to query user accounts.
+
+The format is:
+```USER [action required] [filter optional] [additional arguments] --flags [flag args]```
+
+The USER command requires an action.  There is no default behavior for an action-less USER command.
+
+#### USER add
+
+This action will add a user to the system.
+
+The format is:
+
+```USER add "username" "password"```
+
+After the test completes the user will be removed.  To leave the user behind, specify ```--noclean```
+
+```USER add "username" "password" --noclean```
+
+Users can be added to the system in numerous ways.  Use one of the following flags to control how the user will be added:
+
+##### --net
+
+Use the ```net.exe``` command to add the user.  This is an existing command available on Windows.  The USER command will execute roughly the following:
+
+```net.exe user "username" "password" /ADD```
+
+##### --net1
+
+Similar to the above but using ```net1.exe```
+
+In fact, ```net.exe``` is just a wrapper to ```net1.exe``` 
+
+Some attackers will use ```net1.exe``` to confuse security audits or behavioral detection.
+
+**Currently there is no support to add users using ```--wmic```.**
+
+#### USER list
+
+This action will list users or administrators on a system.  This is a common command-line behavior when attackers have a shell or when malware is performing an inventory of a system.  There are many ways to query users both using tools and making API calls.
+
+The format is:
+
+```USER list```
+
+To list admins, specify the ```admins``` filter:
+
+```USER list admins```
+
+You can specify numerous flags to control how the user list will be queried:
+
+##### --net       
+
+Use the ```net.exe``` command to list users.  
+
+The format is:
+
+```
+USER list --net  # list users
+USER list admins --net # list admins
+```
+
+This is equivalent to running the command line:
+
+```net.exe user```
+
+If you specify ```admins``` then the command will be:
+
+```net.exe localgroup administrators```
+
+Under the hood, ```net.exe``` uses basic win32 API calls to query the user list.
+
+##### --net1
+
+Uses ```net1.exe``` instead of ```net.exe``` but is otherwise equivalent.
+
+The format is:
+
+```
+USER list --net1
+USER list admins --net1
+```
+
+##### --wmic      
+
+This uses the ```wmic.exe``` utility that ships with Windows.  ```wmic.exe``` is a complicated command that can be used in many ways.  
+
+The format is:
+
+```
+USER list --wmic
+USER list admins --wmic
+```
+
+By default, listing users is done with the following command line:
+
+```wmic useraccount```
+
+However, listing admins is done with a far more complicated command line:
+
+```wmic /Node:"COMPUTERNAME" path win32_groupuser where (groupcomponent="win32_group.name=\"administrators\",domain=\"COMPUTERNAME\"")```
+
+In the above, ```COMPUTERNAME``` is replaced with the local computer name.
+
+**When using ```--wmic```, you can specify variations of the command as follows...**
+
+##### --wmic ldap		
+
+Use an ldap directory.  
+
+The format is:
+
+```
+USER list --wmic ldap
+USER list admins --wmic ldap
+```
+
+In the case of listing users, the command line will be similar to the following:
+
+```wmic /NAMESPACE:\\root\directory\ldap PATH ds_user GET ds_smaccountname```
+
+And, when listings admins, the command will be similar to:
+
+```wmic /NAMESPACE:\\root\directory\ldap PATH ds_group where "ds_samccountname='Domain Admins'" Get ds_member /Value```
+
+##### --wmic class	
+
+Use a query against a WMI class.  
+
+The format is:
+
+```
+USER list --wmic class
+```
+
+WMI provides many different information classes that can be queried.  In the case of listing users, the command will be similar to:
+
+```wmic path win32_useraccount```
+
+**Currently there is no support to list admins using ```-wmic class```.**
+
 ### LAUNCH
 
 Launch the previously dropped executable.
@@ -257,18 +532,6 @@ INJECT "explorer.exe"
 USERWAIT
 ```
 
-### RUNKEY
-
-Persist the previously dropped EXE as a run key in the registry.
-
-```batch
-EXE
-	MESSAGEBOX "I am persisting"
-ENDEXE
-DROP
-RUNKEY
-```
-
 ### REGKEY
 
 Write a a specific regkey and persist the previously dropped EXE.
@@ -280,6 +543,17 @@ ENDEXE
 DROP
 REGKEY "Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run"  # APT29 / CozyCar style persistence
 ```
+
+REGKEY takes options.  You can specify preset locations to persist an executable:
+
+REGKEY run          # persist the EXE using the Run key
+REGKEY runonce      # persist the EXE using the RunOnce key
+REGKEY appinit      # register a DLL as an AppInitDLL
+REGKEY bho          # register a DLL as a Browser Helper Object (BHO)
+
+You can also force a regkey to be created in the 64 bit hive:
+
+REGKEY bho --force64  # forces the regkey to be created in the 64 bit hive, as opposed to the Wow6432Node (32 bit) hive.
 
 ### SERVICE
 

@@ -1,8 +1,8 @@
 # Range Forge
 
-Current version is 1.24
+Current version is 1.27
 
-Download archive [RangeForge_v1.24.zip](https://github.com/hoglund666/RangeForge/raw/master/Archive/RangeForge_v1.24.zip).
+Download archive [RangeForge_v1.27.zip](https://github.com/hoglund666/RangeForge/raw/master/Archive/RangeForge_v1.27.zip).
 
 Stay updated on the Range Forge project at [RangeForge.com](https://www.rangeforge.com/).
 

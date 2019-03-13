@@ -5,4 +5,4 @@ EXE
 	INJECT
 ENDEXE
 DROP
-RUNKEY --runonce
+REGKEY runonce

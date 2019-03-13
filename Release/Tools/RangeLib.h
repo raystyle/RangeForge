@@ -16,7 +16,7 @@ using namespace std;  // TODO remove this and fix all the references to std
 
 #pragma comment (lib, "User32.lib")
 
-#define RANGELIB_VERSION L"1.2"
+#define RANGELIB_VERSION L"1.27"
 
 #ifndef _WIN64
 #define PLATFORM_STRING "Win32"
@@ -62,34 +62,30 @@ typedef struct _REGSAVESTATE
 	std::wstring original_keypath;
 	std::wstring original_name;
 	std::wstring original_stringvalue;
+	DWORD		 original_valuetype;
 
 	RESTOREFLAG restore_keypath = RESTOREFLAG::RESTORE_NONE;
 	RESTOREFLAG restore_namevalue = RESTOREFLAG::RESTORE_NONE;
 	
 } REGSAVESTATE, *PREGSAVESTATE;
 
-BOOL ToolRegSaveState(HKEY hKeyRoot, wstring keypath, wstring valuename, PREGSAVESTATE save_state);
-BOOL ToolRegRestoreState(PREGSAVESTATE save_state);
+typedef enum _REGBITS
+{
+	BITS_DEFAULT = 0,	// if 32bit exe on 64bit os, use WoW6432Node 
+	BITS_FORCE32,		// force use of WoW6432Node on 64 bit, even if 64 bit exe	
+	BITS_FORCE64		// force use of 64 bit registry on 64 bit OS, even if 32 bit exe
+} REGBITS;
 
-BOOL ToolRegAppendStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring file_path);
-BOOL ToolRegAddStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring new_value, bool ensureCreated = false);
-BOOL ToolRegDeleteValue(HKEY hKeyRoot, wstring keyname, wstring valuename);
-
-// TODO deconflict refactor
-BOOL PersistRunKey(std::wstring value_name, std::wstring target_file_path, bool run_once, bool user_hive, bool use_wow64);
-BOOL DeleteRunKeyPersistence(std::wstring value_name, bool run_once, bool user_hive, bool wow64);
-
-// TODO deconflict Run Key
-BOOL ToolAddRunKey(wstring theName, wstring theFilePath);
-BOOL ToolDeleteRunKey(wstring theName);
-BOOL ToolAddRunOnceKey(wstring theName, wstring theFilePath);
-BOOL ToolDeleteRunOnceKey(wstring theName);
-
-// TODO deconflict runkey function
-BOOL PersistRunKey(std::wstring value_name, std::wstring target_file_path, bool run_once, bool user_hive, bool use_wow64);
-//BOOL PersistService(std::wstring svc_name, std::wstring display_name, std::wstring target_file_path, std::wstring user_name, std::wstring password);
-//BOOL PersistSvcHost(std::wstring svc_name, std::wstring group_name, std::wstring target_dll_path);
-//BOOL PersistAppInitDll(std::wstring target_dll_path);
+// registry
+BOOL ToolRegInit();
+BOOL ToolRegSaveState(HKEY hKeyRoot, wstring keypath, wstring valuename, PREGSAVESTATE save_state, REGBITS bits = REGBITS::BITS_DEFAULT);
+BOOL ToolRegRestoreState(PREGSAVESTATE save_state, REGBITS bits = REGBITS::BITS_DEFAULT);
+BOOL ToolRegAppendStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring file_path, REGBITS bits = REGBITS::BITS_DEFAULT);
+BOOL ToolRegAddStringValue(HKEY hKeyRoot, wstring keyname, wstring valuename, wstring new_value, bool ensureCreated = false, REGBITS bits = REGBITS::BITS_DEFAULT);
+BOOL ToolRegDeleteValue(HKEY hKeyRoot, wstring keyname, wstring valuename, REGBITS bits = REGBITS::BITS_DEFAULT);
+BOOL ToolRegDeleteLastKeyOfPath(HKEY hive, std::wstring thePath, REGBITS bits = REGBITS::BITS_DEFAULT);
+BOOL ToolAddRegCLSID(std::wstring clsid, std::wstring dllPath, REGBITS bits = REGBITS::BITS_DEFAULT);
+BOOL ToolDelRegCLSID(std::wstring clsid, REGBITS bits = REGBITS::BITS_DEFAULT);
 
 // Services
 BOOL ToolCreatePersistentService(WCHAR *theBinaryPath, WCHAR *theServiceName, WCHAR *theServiceDisplayName);
@@ -99,8 +95,6 @@ BOOL ToolSaveServiceImagePath(wstring servicename, PREGSAVESTATE save_state);
 
 // process
 BOOL ToolLaunchProcess(WCHAR* theProcessPath);
-
-// debugging
 BOOL ToolDebugProcess(std::wstring target_process);
 BOOL ToolOpenProcess(std::wstring target_process);
 BOOL ToolEnumProcii();
@@ -128,18 +122,9 @@ BOOL ToolFunctionFour(CHAR *theArg);
 BOOL ShowMessageBoxOk(std::wstring message, std::wstring caption);
 BOOL ShowMessageBoxYesNo(std::wstring message, std::wstring caption);
 
-
-
 // Tasks
 BOOL ToolCreateTask(WCHAR *theTaskName, WCHAR *theFilePath);
 BOOL ToolDeleteTask(WCHAR *theTaskName);
-
-// AppInit DLL
-//BOOL ToolReadOriginalAppInitDLL(wstring &orig_value);
-BOOL ToolAddAppInitDLL(wstring theFilePath);
-//BOOL ToolRestoreAppInitDLL(wstring orig_value);
-
-
 
 // Synchronization
 DWORD WaitGlobalEventAndTerminate(std::wstring event_name);
@@ -147,4 +132,5 @@ bool SignalGlobalEvent(std::wstring event_name);
 bool WaitGlobalEvent(std::wstring event_name);
 
 BOOL ToolSetVerbose(int level);
+
 

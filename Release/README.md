@@ -3,6 +3,14 @@ Hardening Your Security
 
 Please see our project website at [RangeForge.com](https://www.rangeforge.com/).
 
+## Version 1.27
+- added support for browser helper objects
+- added --force64 for registry keys
+- added support for AppInitDLLs
+- added support for launching DLL's via rundll32.exe
+- added USER command with net, net1, and wmic support
+- added KEYLOG command
+
 ## Version 1.24
 - added service and task persistence
 - added service hijacking
