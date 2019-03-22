@@ -94,7 +94,7 @@ c:\Temp\Tools>rangeforge appdata_runkey.SDL --audit
 c:\Temp\Tools>
 ```
 
-The **audit** feature is a key part of the Range Forge architecture.  It helps illustrate behavior and log static observables and IOC's associated with a test scenario.  Also, auditing illustrates that Range Forge calculates all pseudo-random values before compilation time.  This is an important feature that allows Range Forge to clean downstream artifacts after a test is complete.  And, when using **seeded polymorphism**, it allows you to see that Range Forge generated tests can be reproduced in a QA lab or across multiple teams.
+The **audit** feature is a key part of the Range Forge architecture.  It helps illustrate behavior and log static observables and IOC's associated with a test scenario.  Also, auditing illustrates that Range Forge calculates all pseudo-random values before compilation time.  This is an important feature that allows Range Forge to clean downstream artifacts after a test is complete.  And, when using **seeded polymorphism**, it allows you to see that Range Forge generated tests that can be reproduced in a QA lab or across multiple teams.
 
 For more information on how to use the ```RangeForge.exe``` command line, see [Cmdline.md]()
 
@@ -471,6 +471,33 @@ WMI provides many different information classes that can be queried.  In the cas
 ```wmic path win32_useraccount```
 
 **Currently there is no support to list admins using ```-wmic class```.**
+
+### TOKEN
+
+Ability to enable privileges and impersonate process tokens.
+
+#### TOKEN priv [enable|disable] "privilege_name"
+
+Enable or disable privileges.  
+
+```
+TOKEN priv enable "debug"
+```
+
+The above command would enable the debug privilege (SE_DEBUG_PRIV) on the current token.
+
+#### TOKEN impersonate "process_name"
+
+Impersonate the token of another process.
+
+```
+TOKEN priv enable "debug"
+TOKEN impersonate "lsass.exe"
+```
+
+The above would impersonate the token of lsass.exe - thus granting NT_AUTHORITY/SYSTEM access.  Note that SE_DEBUG_PRIV is enabled first in order to allow the impersonation to succeed.
+
+You can follow the token impersonation with LAUNCH or INJECT to use the stolen token for subsequent operations.
 
 ### LAUNCH
 

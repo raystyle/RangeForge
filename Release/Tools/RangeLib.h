@@ -16,7 +16,7 @@ using namespace std;  // TODO remove this and fix all the references to std
 
 #pragma comment (lib, "User32.lib")
 
-#define RANGELIB_VERSION L"1.27"
+#define RANGELIB_VERSION L"1.28"
 
 #ifndef _WIN64
 #define PLATFORM_STRING "Win32"
@@ -98,8 +98,12 @@ BOOL ToolLaunchProcess(WCHAR* theProcessPath);
 BOOL ToolDebugProcess(std::wstring target_process);
 BOOL ToolOpenProcess(std::wstring target_process);
 BOOL ToolEnumProcii();
-BOOL ToolAdjustTokenPrivilege(std::wstring privilege_name);
 BOOL ToolDetachDebugger();
+
+// tokens
+BOOL ToolEnableTokenPrivilege(std::wstring privilege_name);
+BOOL ToolDisableTokenPrivilege(std::wstring privilege_name);
+BOOL ToolImpersonateProcessToken(std::wstring process_name);
 
 // keylogger
 BOOL ToolSetKeylogger();

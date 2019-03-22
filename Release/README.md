@@ -3,7 +3,13 @@ Hardening Your Security
 
 Please see our project website at [RangeForge.com](https://www.rangeforge.com/).
 
+## Version 1.28
+
+- added TOKEN impersonate
+- added TOKEN priv enable/disable
+
 ## Version 1.27
+
 - added support for browser helper objects
 - added --force64 for registry keys
 - added support for AppInitDLLs

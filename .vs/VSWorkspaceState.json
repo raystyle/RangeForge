@@ -3,8 +3,8 @@
     "",
     "\\Archive",
     "\\Release",
-    "\\Release\\Tests",
-    "\\Release\\Tests\\Accounts"
+    "\\Release\\Tests"
   ],
+  "SelectedNode": "\\Release\\Tests\\Execution",
   "PreviewInSolutionExplorer": false
 }

@@ -1,0 +1,3 @@
+TOKEN priv enable "debug"
+TOKEN impersonate "lsass.exe"
+USERWAIT
