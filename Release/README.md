@@ -3,6 +3,11 @@ Hardening Your Security
 
 Please see our project website at [RangeForge.com](https://www.rangeforge.com/).
 
+## Version 1.29
+
+- added TOKEN runas
+- added LAUNCH --runas
+
 ## Version 1.28
 
 - added TOKEN impersonate

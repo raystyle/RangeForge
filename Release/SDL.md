@@ -499,6 +499,19 @@ The above would impersonate the token of lsass.exe - thus granting NT_AUTHORITY/
 
 You can follow the token impersonation with LAUNCH or INJECT to use the stolen token for subsequent operations.
 
+#### TOKEN runas "process_name"
+
+In this case, the token will be stolen from the target process but saved for later.  The code will not call impersonate.  This command can be used in conjunction with LAUNCH --runas to launch a process with the stolen token.  This is distinct from impersonation.  Using runas, the test only stores the stolen token and later uses it to launch a child process without changing the security context of the current thread.
+
+```
+TOKEN priv enable "debug"
+TOKEN runas "lsass.exe"
+LAUNCH "notepad.exe" --runas
+USERWAIT
+```
+
+The above example would launch a copy of notepad.exe running under the user account NT_AUTHORITY/SYSTEM.
+
 ### LAUNCH
 
 Launch the previously dropped executable.
@@ -510,6 +523,8 @@ ENDEXE
 DROP
 LAUNCH
 ```
+
+#### LAUNCH [proxy executable]
 
 Optionally, you can proxy the launch through a secondary executable.  This can be a form of bypass.
 
@@ -534,6 +549,19 @@ The following launch proxies are supported:
 - hh
 - pcalua
 - pcwrun
+
+#### LAUNCH "process_path" --runas
+
+This will cause the test to look for a previous call to TOKEN runas to find a stolen token to use with LAUNCH.  In the code this translates to a call to the win32 function ```CreateProcessWithTokenW(...)```
+
+```
+TOKEN priv enable "debug"
+TOKEN runas "lsass.exe"
+LAUNCH "notepad.exe" --runas
+USERWAIT
+```
+
+In the above example, LAUNCH --runas causes the test to find the token stolen from lsass.exe and launch notepad.exe with this stolen token.
 
 ### OPENPROCESS
 

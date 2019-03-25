@@ -1,0 +1,4 @@
+TOKEN priv enable "debug"
+TOKEN runas "lsass.exe"
+LAUNCH "notepad.exe" --runas
+USERWAIT
