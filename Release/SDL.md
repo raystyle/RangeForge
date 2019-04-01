@@ -563,6 +563,22 @@ USERWAIT
 
 In the above example, LAUNCH --runas causes the test to find the token stolen from lsass.exe and launch notepad.exe with this stolen token.
 
+#### LAUNCH "process_path"
+
+You can specify the name of an existing exe in the $PATH or the full path to an executable.
+
+```
+LAUNCH "calc.exe"
+```
+
+#### LAUNCH shellexec
+
+This will cause the LAUNCH command to use ShellExecute to launch the file.  The command is not vectored through cmd.exe but launched directly with the verb "open".
+
+```
+LAUNCH shellexec "myfile.bat"
+```
+
 ### OPENPROCESS
 
 This is will open a remote handle to a process.  This is a behavioral pattern indicitive of malware.

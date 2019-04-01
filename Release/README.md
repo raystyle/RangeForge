@@ -3,6 +3,12 @@ Hardening Your Security
 
 Please see our project website at [RangeForge.com](https://www.rangeforge.com/).
 
+## Version 1.30
+
+- added LAUNCH shellexec
+- added additional file extension hijacking
+- added sethc and utilman hijacking via debugger key
+
 ## Version 1.29
 
 - added TOKEN runas

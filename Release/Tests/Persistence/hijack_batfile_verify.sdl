@@ -1,0 +1,11 @@
+EXE
+	MESSAGEBOX "Hello From Hijack"
+ENDEXE
+DROP
+REGKEY filext bat
+STRINGS
+	"echo hello"
+ENDSTRINGS
+DROP "test.bat"
+LAUNCH explorer
+USERWAIT

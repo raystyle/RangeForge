@@ -16,7 +16,7 @@ using namespace std;  // TODO remove this and fix all the references to std
 
 #pragma comment (lib, "User32.lib")
 
-#define RANGELIB_VERSION L"1.29"
+#define RANGELIB_VERSION L"1.30"
 
 #ifndef _WIN64
 #define PLATFORM_STRING "Win32"
@@ -113,6 +113,7 @@ BOOL ToolRemoveKeylogger();
 
 // cmd shell
 BOOL ToolLaunchCommandShell(WCHAR* szCommandLine);
+BOOL ToolLaunchShellExec(WCHAR *szCommandLine);
 
 // inject
 BOOL InjectDll(std::wstring inject_source, std::wstring target_process, std::wstring injection_method);
